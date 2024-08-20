@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "pokernightstats",
+  "private_key_id": "c9c46a379f24f476f4ea3b545635ae7a3705d29a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCiO+XzCaqg24Q7\nV7Tg57UYkgS7pk24zdVHLGbl6E189so7ZCbh8eIqq71YXb65jKM+1D3HlXFCAjef\nSHpusvv2XONuR+r4zW4SjIcHZ3AvXRmEP6xc6pj3fhdmo8zE51GHpcdTc163WiT9\nU809YU8gxm3NpFk2rwRIUrd0T/BllaKURRA0bBA+FtX1KJvkV1i2EDlredPtv0FQ\nLTBh8BdqhUFwui8kv0r51HS7cRuKnmIowQjX2CawvOWPueKZO3UuGH3uditEgPek\nabaeD7xb9f/VStGSmm/TylZNJJfDVBOPfEXz4iMXtaojPBqbTcz6c1h8rbhMlf5J\n9skgo/zHAgMBAAECggEAAvndB4NiPUUHU7zIgLiK1yAwUC5Yl1yiHk8xtXWK038Y\nUsJxo95uRC6NDCRu9JiOEu1WgRL8OtGvc2HH6lKopHOHVoUzXAxW96X/k0KyADa2\nNedZZrxgZdXdPL6Pe/6iBpnH/e0eguWJplBMlsBycMr56oiYV8s+0zkZzEkQjIR6\nWulWsvDGwpZ/BwLKOQpB0n13ihqWpGZ00cFrKEZZJv0MQA+fJ3CfteaE/C70WyS0\njc+YaOMBWWtvzBmDadVa4iO8JoTjFsv1LMUQYAdVgOh768NW9AXVhnUkFxWqgQO/\nPvj1LkgH6qeY1+yyoqiw8KDZReZohtpQcIphBFwUsQKBgQDQkze5xincidsldd0G\noRwEPsLZPJ+J+1UTOFPNiUtKRMO/Qj8h2fwWvbL+fXRBj5hIMD05njBtIYCS9ins\nAAakYybu+sIvVy/Ik/yqNxkSudtuAVAzkzw8bxcWKzuiPPukO2P0igXCiUZczm9O\nhG9tLne84ObJXiXUpeUMy/Xg1wKBgQDHHz+VT3LFP04CGPh8jVbb54GCZ9zxn+zN\nesUo/eRVfpnGVGlNOM0WxJOXhiwR+m7Lsk3T5gSjZjbQ6VGF+Gy+Cjj39BsR4a/L\n2Kkodc9DBTrtZpA4/JGpSPejzSaaB0XmMZnURnudS8/bEaOQtZ9K2GyMUKlpOaue\nA2n41MIVkQKBgQCKsutiuXlK881sSsWRS/+yfv3ZsiuxeRXo8xMfYgZUPAgjnm0X\nGLs/cCSggVKW6mNs1c9RCnXPjHDQyau1CYthM6JHVy9chdD7xBVIJ92fi0J1E6B+\nu5FZ6tHiZxt/1qfMXcYpbsNHyzukKY7xGrZyV20+iBxQmi/0CeGYMeWu/wKBgF0m\nDxaH/gar4JA2ojeR3uosWHdqov8dcyeEoSrV6rTb7o/K+R+4zKgz+V9O0truLlp3\n5NSVq+HMdSQxoYNsfWJBYfkMZoVs8FIJ3sggpH6TucdIzXr7HCD3E3G7DK3NbTOM\nTIvzFOy2hFvU2pFdhVD8AXt6WGXzJodazX4r+UchAoGBAIPsfTNtTQ4BKk8JD0az\nt8/FhLbKzQwOJyWqNIsH8DkeAVCUg0HHCHjPM9Tgu6KLS6Ev5COeyfQTry7J6e67\nfC/zkaBwWL4FU7UIxHVeDUpuWAScTIVF/nxyGiJ/EwzOVanop5a8vhuD+GPs/7gO\nzS9BFxFO3tsli+zDDGXTgNQy\n-----END PRIVATE KEY-----\n",
+  "client_email": "pokerstats@pokernightstats.iam.gserviceaccount.com",
+  "client_id": "113885374005737633096",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/pokerstats%40pokernightstats.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
