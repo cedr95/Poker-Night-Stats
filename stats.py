@@ -8,11 +8,13 @@ import streamlit as st
 
 # Authenticate and setup scope of project
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
-SERVICE_ACCOUNT_FILE = 'keys.json'
+# SERVICE_ACCOUNT_FILE = 'keys.json'
 
 
 creds = None
-creds = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes = SCOPES)
+creds = service_account.Credentials.from_service_account_info(
+    st.secrets["google_credentials"], scopes=SCOPES
+)
 
 # The ID and range of a sample spreadsheet.
 SAMPLE_SPREADSHEET_ID = "1JvAZOxj4qSp0NaU96tAX0qDB8Jk1p49VL8vlkxa43ck"
