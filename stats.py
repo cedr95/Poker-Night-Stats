@@ -4,17 +4,20 @@ from google.oauth2 import service_account
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+import plotly.graph_objects as go
 
 
 # Authenticate and setup scope of project
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
-# SERVICE_ACCOUNT_FILE = 'keys.json'
+#SERVICE_ACCOUNT_FILE = 'keys.json'
 
 
 creds = None
 creds = service_account.Credentials.from_service_account_info(
     st.secrets["google_credentials"], scopes=SCOPES
 )
+
+#creds = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE)
 
 # The ID and range of a sample spreadsheet.
 SAMPLE_SPREADSHEET_ID = "1JvAZOxj4qSp0NaU96tAX0qDB8Jk1p49VL8vlkxa43ck"
@@ -49,7 +52,60 @@ st.title(" :bar_chart: Poker Stats ")
 
 #Date Selection
 
-col1, col2 = st.columns((2))
+# Create a copy of the unfiltered DataFrame for leaderboard calculations
+
+#st.logo(
+ #   image=
+ #   link="https://streamlit.io/gallery",
+  #  icon_image=None
+# )
+
+unfiltered_df = df.copy()
+
+# Convert Net Earnings column into numerical float
+unfiltered_df['Net Earnings'] = pd.to_numeric(unfiltered_df['Net Earnings'].replace('[\$,]', '', regex=True), errors='coerce')
+
+# Ensure 'Session Date' is in datetime format
+unfiltered_df['Session Date'] = pd.to_datetime(unfiltered_df['Session Date'])
+
+# Find the most recent session's earnings for each player
+most_recent_sessions = (unfiltered_df
+                        .sort_values(by=['Name', 'Session Date'], ascending=[True, False])
+                        .groupby('Name')
+                        .head(1)
+                        .reset_index(drop=True))
+
+# Calculate total earnings per player using the unfiltered DataFrame
+unfiltered_earnings_by_player = unfiltered_df.groupby('Name')['Net Earnings'].sum().reset_index()
+
+# Sort players by total net earnings to get the top 3 players
+top_players = unfiltered_earnings_by_player.sort_values(by='Net Earnings', ascending=False).head(3)
+
+# Merge the most recent session's earnings into the top players
+top_3 = pd.merge(top_players, most_recent_sessions[['Name', 'Net Earnings']], on='Name', suffixes=('', '_Recent'))
+
+# Calculate the delta as the most recent session's earnings
+top_3['Delta'] = top_3['Net Earnings_Recent']  # Showing the most recent session's earnings
+
+# Displaying the top 3 players in each column
+st.header("Top 3 Players")
+
+# Create 3 columns for displaying the metrics
+col1, col2, col3 = st.columns(3)
+
+# Assigning each player to a column
+columns = [col1, col2, col3]
+for i, (col, row) in enumerate(zip(columns, top_3.iterrows())):
+    with col:
+        st.metric(
+            label=row[1]['Name'],  # row[1] accesses the row data since iterrows() returns (index, Series)
+            value=f"${row[1]['Net Earnings']:.2f}", 
+            delta=row[1]['Delta']  # Show delta as a formatted string with correct sign
+        )
+
+
+
+col1, col2 = st.columns((2)) # settiing up the 2 columns
 df["Session Date"] = pd.to_datetime(df["Session Date"])
 
 #Get min and max dates
@@ -113,6 +169,8 @@ earnings_by_player = earnings_by_player.merge(win_loss_count[['Win-Loss Ratio']]
 
 earnings_by_player = earnings_by_player.sort_values(by = "Win-Loss Ratio", ascending = False)
 
+net_earnings_by_player = earnings_by_player.sort_values(by = "Net Earnings", ascending= False)
+
 # Session Count
 session_counts = df3.groupby('Name')['Session Date'].count().reset_index()
 session_counts.columns = ['Name', 'Number of Sessions']
@@ -120,18 +178,39 @@ session_counts.columns = ['Name', 'Number of Sessions']
 
 with col1:
     # Create a bar chart using Plotly
-    fig = px.bar(earnings_by_player, x='Name', y='Net Earnings', title='Net Earnings by Player')
+    st.subheader("Net Earnings by Player")
+    colors = ['green' if x > 0 else 'red' for x in net_earnings_by_player['Net Earnings']]
+    fig = go.Figure(
+    data=[
+        go.Bar(
+            x=net_earnings_by_player["Name"], 
+            y=net_earnings_by_player["Net Earnings"], 
+            marker_color=colors
+        )
+    ]
+)
+    fig.update_layout(
+    title='',
+    xaxis_title='Player',
+    yaxis_title='Net Earnings'
+)
+    
+
+
+    #fig = px.bar(net_earnings_by_player, x='Name', y='Net Earnings', title='Net Earnings by Player')
     st.plotly_chart(fig, use_container_width=True)
+    
+
 
 
 with col2:
-    # Display the bar chart for the number of sessions
-    fig_sessions = px.bar(session_counts, x='Name', y='Number of Sessions',
-                     title='Number of Sessions Played by Each Player',
-                     labels={'Name': 'Player', 'Number of Sessions': 'Number of Sessions'})
-    st.plotly_chart(fig_sessions, use_container_width=True)
+   # Display the bar chart for the number of sessions
+    st.subheader("Net Earnings by Player")
+    st.dataframe(net_earnings_by_player[["Name","Net Earnings"]])
 
-    st.subheader("Top Earning Sessions Per Player")
+
+
+    st.subheader("Top Earning Sessions per Player")
     st.dataframe(highest_session_per_player[['Name', 'Session Date', 'Net Earnings']], hide_index=True)
 
 with col1:
@@ -148,12 +227,18 @@ df3['Week Performance'] = df3['Session Date'].dt.to_period('W').astype(str)
 # Calculate the net earnings for each player per week
 weekly_performance = df3.groupby(['Week Performance', 'Name'])['Net Earnings'].sum().unstack(fill_value=0)
 
+st.subheader("Number of Sessions Played by Player")
+fig_sessions = px.bar(session_counts, x='Name', y='Number of Sessions',
+                     title='',
+                     labels={'Name': 'Player', 'Number of Sessions': 'Number of Sessions'})
+st.plotly_chart(fig_sessions, use_container_width=True)
+
 # Create the heatmap
 heatmap_fig = px.imshow(weekly_performance, 
                         labels=dict(x="Player", y="Week", color="Net Earnings"),
                         x=weekly_performance.columns, 
                         y=weekly_performance.index,
-                        title="Weekly Performance Heatmap",
+                        title="",
                         color_continuous_scale='Viridis')
 
 heatmap_fig.update_layout(
@@ -171,8 +256,8 @@ st.subheader("Weekly Performance Heatmap")
 st.plotly_chart(heatmap_fig, use_container_width=True)
 
 # Total earnings contributed as pie chart
-
-fig2 = px.pie(earnings_by_player, names='Name', values='Abs Net Earnings', title='Percentage of Total Money Contributed by Each Person')
+st.subheader("Percentage of Total Money Contributed by Each Person")
+fig2 = px.pie(earnings_by_player, names='Name', values='Abs Net Earnings', title='')
 st.plotly_chart(fig2, use_container_width=True)
 
 
@@ -183,5 +268,11 @@ df3['Cumulative Earnings'] = df3.groupby('Name')['Net Earnings'].cumsum()
 # Plot the cumulative earnings line chart
 st.subheader("Cumulative Earnings Over Time")
 cumulative_earnings_chart = px.line(df3, x='Session Date', y='Cumulative Earnings', color='Name',
-                                     title='Cumulative Earnings Over Time', markers=True)
+                                     title='', markers=True)
 st.plotly_chart(cumulative_earnings_chart, use_container_width=True)
+with st.expander("Cumulative Earnings Data"):
+         st.write(df3[["Cumulative Earnings","Name","Session Date"]].T)
+         csv = df3[["Cumulative Earnings","Name","Session Date"]].to_csv(index = False).encode("utf-8")
+         st.download_button("Download Data", data= csv, file_name= "Cumulative-Earnings.csv", mime = "text/csv")
+
+
